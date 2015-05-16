@@ -17,24 +17,22 @@ enum state: String {
     case O = "O"
 }
 
-//Board
-var board: [[state]] = [
-    [state.empty, state.empty, state.empty],
-    [state.empty, state.empty, state.empty],
-    [state.empty, state.empty, state.empty]
-]
-
-//Function for print board
-func printBoard (Array: [[state]]) {
-    for row in 0...2 {
-        for col in 0...2 {
-            print(board[row][col].rawValue)
-        }
-        println("\t\(1+row) \(2+row) \(3+row)")
+//Users
+enum Users: String {
+    case X = "X"
+    case O = "O"
+    static var cases: [Users] = [X, O] //magic func for changing users
+    mutating func advance() {
+        var i = find(Users.cases, self)!
+        i = (i + 1) % 2
+        self = Users.cases[i]
     }
 }
 
-//Function for text input
+//Board
+var board = [state] (count: 9, repeatedValue: state.empty)
+
+//text input
 func input() -> String {
     var keyboard = NSFileHandle.fileHandleWithStandardInput()
     var inputData = keyboard.availableData
@@ -43,35 +41,57 @@ func input() -> String {
     return strData.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
 }
 
-//Function for user's turn
-func userInput() -> Int {
-    println("Your choise (1-9)?")
-    var userTurn = input()
-    var turn = userTurn.toInt()!
+//Users inputs their turns
+func userInput(user: String) -> Int {
+    println()
+    println("\(user) choise (1-9)?")
+    var userTurn : String = input()
+    var turn : Int = userTurn.toInt()!
     return turn
 }
 
-func setTurn(turn: Int) -> () {
-    switch turn {
-    case 1...3: board[0][turn - 1] = state.X
-    case 4...6: board[1][turn - 4] = state.X
-    case 7...9: board[2][turn - 7] = state.X
-    default: break
+//Users changing the board
+func setTurn(activeUser: String, turn: Int) -> () {
+    board[turn-1] = state(rawValue: activeUser)!
+}
+
+//printing the board
+func printBoard (Array: [state]) {
+    var counter = 0
+    for row in 0...2 {
+       for col in 0...2 {
+            print("\t\(board[counter].rawValue)")
+            counter++
+        }
+        println()
     }
 }
 
+//isWin
+func isWin (activeUser: String) {
+    switch board {
+    case _ where (board[0] == board[1]) && (board[1] == board[2]) && board[0].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[3] == board[4]) && (board[4] == board[5]) && board[3].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[6] == board[7]) && (board[7] == board[8]) && board[6].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[0] == board[3]) && (board[3] == board[6]) && board[0].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[1] == board[4]) && (board[4] == board[7]) && board[1].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[2] == board[5]) && (board[5] == board[8]) && board[2].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[0] == board[4]) && (board[4] == board[8]) && board[0].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[2] == board[4]) && (board[4] == board[6]) && board[2].rawValue != ".": println("\(activeUser) win!")
+    default: break
+    }
+    return
+}
+
 //  ****GAME****
-
-println("1, 2, 3")
-println("4, 5, 6")
-println("7, 8, 9")
-
-
-var turn =  userInput() //for current turn
-setTurn(turn)
+var turn = 0 //the cell on the board, which active user will mark
 printBoard(board)
-
-turn =  userInput()
-setTurn(turn)
-printBoard(board)
+var activeUser = Users.X
+for step in 1...8 {
+    turn =  userInput(activeUser.rawValue) //demande
+    setTurn(activeUser.rawValue, turn) //set turn on the board
+    printBoard(board)
+    isWin(activeUser.rawValue)
+    activeUser.advance() //changing users
+}
 
