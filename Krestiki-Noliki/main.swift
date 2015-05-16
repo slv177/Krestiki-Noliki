@@ -17,7 +17,7 @@ enum state: String {
     case O = "O"
 }
 
-//board
+//Board
 var board: [[state]] = [
     [state.empty, state.empty, state.empty],
     [state.empty, state.empty, state.empty],
@@ -30,7 +30,7 @@ func printBoard (Array: [[state]]) {
         for col in 0...2 {
             print(board[row][col].rawValue)
         }
-        println()
+        println("\t\(1+row) \(2+row) \(3+row)")
     }
 }
 
@@ -43,12 +43,15 @@ func input() -> String {
     return strData.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
 }
 
-//Function for users input
-func userInput () {
-    println("Your choise?")
+//Function for user's turn
+func userInput() -> Int {
+    println("Your choise (1-9)?")
     var userTurn = input()
     var turn = userTurn.toInt()!
-    
+    return turn
+}
+
+func setTurn(turn: Int) -> () {
     switch turn {
     case 1...3: board[0][turn - 1] = state.X
     case 4...6: board[1][turn - 4] = state.X
@@ -63,8 +66,12 @@ println("1, 2, 3")
 println("4, 5, 6")
 println("7, 8, 9")
 
-userInput()
+
+var turn =  userInput() //for current turn
+setTurn(turn)
 printBoard(board)
 
-
+turn =  userInput()
+setTurn(turn)
+printBoard(board)
 
