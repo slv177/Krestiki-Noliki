@@ -68,30 +68,33 @@ func printBoard (Array: [state]) {
 }
 
 //isWin
-func isWin (activeUser: String) {
+func isWin (activeUser: String) -> Bool {
     switch board {
-    case _ where (board[0] == board[1]) && (board[1] == board[2]) && board[0].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[3] == board[4]) && (board[4] == board[5]) && board[3].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[6] == board[7]) && (board[7] == board[8]) && board[6].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[0] == board[3]) && (board[3] == board[6]) && board[0].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[1] == board[4]) && (board[4] == board[7]) && board[1].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[2] == board[5]) && (board[5] == board[8]) && board[2].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[0] == board[4]) && (board[4] == board[8]) && board[0].rawValue != ".": println("\(activeUser) win!")
-    case _ where (board[2] == board[4]) && (board[4] == board[6]) && board[2].rawValue != ".": println("\(activeUser) win!")
+    case _ where (board[0] == board[1]) && (board[1] == board[2]) && board[0].rawValue != ".": return true
+    case _ where (board[3] == board[4]) && (board[4] == board[5]) && board[3].rawValue != ".": return true
+    case _ where (board[6] == board[7]) && (board[7] == board[8]) && board[6].rawValue != ".": return true
+    case _ where (board[0] == board[3]) && (board[3] == board[6]) && board[0].rawValue != ".": return true
+    case _ where (board[1] == board[4]) && (board[4] == board[7]) && board[1].rawValue != ".": return true
+    case _ where (board[2] == board[5]) && (board[5] == board[8]) && board[2].rawValue != ".": return true
+    case _ where (board[0] == board[4]) && (board[4] == board[8]) && board[0].rawValue != ".": return true
+    case _ where (board[2] == board[4]) && (board[4] == board[6]) && board[2].rawValue != ".": return true
     default: break
     }
-    return
+    return false
 }
 
 //  ****GAME****
 var turn = 0 //the cell on the board, which active user will mark
 printBoard(board)
 var activeUser = Users.X
-for step in 1...8 {
+outer: for step in 1...8 {
     turn =  userInput(activeUser.rawValue) //demande
     setTurn(activeUser.rawValue, turn) //set turn on the board
     printBoard(board)
-    isWin(activeUser.rawValue)
+    if isWin(activeUser.rawValue) {
+        println("\(activeUser.rawValue) win!")
+        break outer
+    }
     activeUser.advance() //changing users
 }
 
