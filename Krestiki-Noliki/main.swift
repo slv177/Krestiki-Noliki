@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Viacheslav Shambazov. All rights reserved.
 //
 
-//****DEFINITIONS****
+//  ****DEFINITIONS****
 
 import Foundation
 
@@ -44,7 +44,7 @@ func input() -> String {
 }
 
 //Function for users input
-func gameCycle () {
+func userInput () {
     println("Your choise?")
     var userTurn = input()
     var turn = userTurn.toInt()!
@@ -55,17 +55,16 @@ func gameCycle () {
     case 7...9: board[2][turn - 7] = state.X
     default: break
     }
-    printBoard(board)
 }
 
-//****GAME****
+//  ****GAME****
 
 println("1, 2, 3")
 println("4, 5, 6")
 println("7, 8, 9")
 
-gameCycle()
-gameCycle()
-gameCycle()
+userInput()
+printBoard(board)
+
 
 
