@@ -26,13 +26,13 @@ enum Users: String {
         var i = find(Users.cases, self)!
         i = (i + 1) % 2
         self = Users.cases[i]
-    }
+    }       //magic func for changing users
 }
 
 //Board
 var board = [state] (count: 9, repeatedValue: state.empty)
 
-//text input
+//Text input
 func input() -> String {
     var keyboard = NSFileHandle.fileHandleWithStandardInput()
     var inputData = keyboard.availableData
@@ -43,9 +43,16 @@ func input() -> String {
 
 //Users inputs their turns
 func userInput(user: String) -> Int {
-    println()
-    println("\(user) choise (1-9)?")
-    var userTurn : String = input()
+    func gettingInput(user: String) -> String{  //getting a value from keyboard
+        println("\(user) choise (1-9)?")
+        var userTurn : String = input()
+        return userTurn
+    }
+    var userTurn = gettingInput(user)
+    if count(userTurn) != 1 {  //checking the value
+        println("Choose only one digit.")
+        gettingInput(user)
+    }
     var turn : Int = userTurn.toInt()!
     return turn
 }
@@ -55,19 +62,26 @@ func setTurn(activeUser: String, turn: Int) -> () {
     board[turn-1] = state(rawValue: activeUser)!
 }
 
-//printing the board
+//Printing the board
 func printBoard (Array: [state]) {
     var counter = 0
+    println("\u{250c}\u{2500}\u{2500}\u{252c}\u{2500}\u{2500}\u{252c}\u{2500}\u{2500}\u{2510}")
     for row in 0...2 {
        for col in 0...2 {
-            print("\t\(board[counter].rawValue)")
+        print("\u{2502}\(counter+1)\(board[counter].rawValue)")
             counter++
         }
-        println()
+        println("\u{2502}")
+        if row < 2 {println("\u{251c}\u{2500}\u{2500}\u{253c}\u{2500}\u{2500}\u{253c}\u{2500}\u{2500}\u{2524}")
+        } else {
+            println("\u{2514}\u{2500}\u{2500}\u{2534}\u{2500}\u{2500}\u{2534}\u{2500}\u{2500}\u{2518}")
+        }
     }
+    println()
+
 }
 
-//isWin
+//Is active user win?
 func isWin (activeUser: String) -> Bool {
     switch board {
     case _ where (board[0] == board[1]) && (board[1] == board[2]) && board[0].rawValue != ".": return true
@@ -87,7 +101,7 @@ func isWin (activeUser: String) -> Bool {
 var turn = 0 //the cell on the board, which active user will mark
 printBoard(board)
 var activeUser = Users.X
-outer: for step in 1...8 {
+outer: for step in 1...9 {
     turn =  userInput(activeUser.rawValue) //demande
     setTurn(activeUser.rawValue, turn) //set turn on the board
     printBoard(board)
@@ -97,4 +111,5 @@ outer: for step in 1...8 {
     }
     activeUser.advance() //changing users
 }
+println("Game is ower")
 
